@@ -20,7 +20,10 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - run: echo my name is "$my_first_variable"    
+      - run:
+          name: "echo an env var that is part of our project"
+          command: |
+            echo my name is $my_first_variable      
 workflows:
   # Name the workflow "welcome"
   welcome:
