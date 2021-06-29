@@ -1,30 +1,29 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-# Use a package of configuration called an orb.
+# Use a command to print pipeline
 # Orchestrate or schedule a set of jobs
+commands:
+  print_pipeline_id:
+    description: "A very simple command for printing pipeline ID"
+    parameters:
+      pipeline_id:
+        type: integer
+        default: 1000
+    steps:
+      - run: echo <<"pipeline id used is parameters.pipeline_id>>
 jobs:
-  save_hello_world_output:
+  print_piepline:
     docker:
       - image: circleci/node:13.8.0
+environment:
+      PIPELINEID: << pipeline.parameters.CIRCLE_WORKFLOW_ID>>
     steps:
-      - run: echo "hello world" > ~/output.txt
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - output.txt
-  print_output_file:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - attach_workspace:
-          at: ~/
-      - run: cat ~/output.txt
+      - print_pipeline_id
+      -   pipeline_id: "${PIPELINEID}"
 workflows:
   # Name the workflow "welcome"
   welcome:
     # Run the welcome/run job in its own container
     jobs:
-      - save_hello_world_output
-      - print_output_file:
-          requires:
-            - save_hello_world_output
+      - print_piepline
+
